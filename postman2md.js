@@ -4,8 +4,8 @@ var input = './a.json';
 var output = './a.md';
 
 var markdown = fs.createWriteStream(output);
-markdown.once('open', function() {
-    fs.readFile(input, 'utf8', function(err, data) {
+markdown.once('open', () => {
+    fs.readFile(input, 'utf8', (err, data) => {
         if (err) {
             console.log(err);
             markdown.end();
@@ -14,7 +14,7 @@ markdown.once('open', function() {
 
         var collection = JSON.parse(data);
         var requests = {};
-        collection.requests.forEach(function(request) {
+        collection.requests.forEach((request) => {
             requests[request.id] = request;
         });
 
@@ -23,12 +23,12 @@ markdown.once('open', function() {
         markdown.write(`${collection.description}\n\n\n`);
 
         // 模块
-        collection.folders.forEach(function(folder) {
+        collection.folders.forEach((folder) => {
             markdown.write(`## ${folder.name}\n`);
             markdown.write(`${folder.description}\n\n\n`);
 
             // 接口
-            folder.order.forEach(function(requestId) {
+            folder.order.forEach((requestId) => {
                 var request = requests[requestId];
 
                 markdown.write(`### ${request.name}\n`);
