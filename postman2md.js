@@ -4,34 +4,34 @@ var input = './a.json';
 var output = './a.md';
 
 var markdown = fs.createWriteStream(output);
-markdown.once('open', () => {
-    fs.readFile(input, 'utf8', (err, data) => {
+markdown.once('open', function() {
+    fs.readFile(input, 'utf8', function(err, data) {
         if (err) {
             console.log(err);
             markdown.end();
             return;
         }
 
-        var collection = JSON.parse(data);
+        var dump = JSON.parse(data);
         var requests = {};
-        collection.requests.forEach((request) => {
+        dump.requests.forEach(function(request) {
             requests[request.id] = request;
         });
 
         // 文档
-        markdown.write(`# ${collection.name}\n`);
-        markdown.write(`${collection.description}\n\n\n`);
+        markdown.write(`# ${dump.name}\n`);
+        markdown.write(`${dump.description}\n\n\n`);
 
         // 模块
-        collection.folders.forEach((folder) => {
-            markdown.write(`## ${folder.name}\n`);
+        dump.folders.forEach(function(folder, folderIndex) {
+            markdown.write(`## ${folderIndex + 1}、 ${folder.name}\n`);
             markdown.write(`${folder.description}\n\n\n`);
 
             // 接口
-            folder.order.forEach((requestId) => {
+            folder.order.forEach(function(requestId, requestIndex) {
                 var request = requests[requestId];
 
-                markdown.write(`### ${request.name}\n`);
+                markdown.write(`### ${folderIndex + 1}.${requestIndex + 1}、 ${request.name}\n`);
                 markdown.write('```\n');
                 markdown.write(`${request.method} ${request.url}\n`);
                 markdown.write(`${request.headers}`);
